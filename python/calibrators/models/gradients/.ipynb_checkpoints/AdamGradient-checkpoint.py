@@ -1,8 +1,10 @@
 import numpy as np
 import torch as pt
 
+from .learn import Const
+
 class AdamGradient:
-    def __init__(self, alpha=0.8, beta=0.9, clamp=1e-16):
+    def __init__(self, Learn=Const, learn_params={}, alpha=0.8, beta=0.9, clamp=1e-16):
         self.alpha = alpha
         self.beta = beta
         self.clamp = clamp
@@ -10,14 +12,16 @@ class AdamGradient:
         self.grad = {}
         self.grad_sq = {}
         
-    def descent(self, loss, coefs, learn_rate):
+        self.Learn = Learn(**learn_params)
+        
+    def descent(self, loss, coefs):
         gradient = self.grad_calc(loss, coefs)
         with pt.no_grad():
             for idx in gradient.keys():
                 self.grad[idx] = (self.alpha * gradient[idx]) + ((1-self.alpha) * self.grad.get(idx, gradient[idx]))
                 self.grad_sq[idx] = (self.beta * (gradient[idx]**2)) + ((1-self.beta) * self.grad_sq.get(idx, gradient[idx]**2))
                 step = self.grad[idx] / pt.clamp(pt.sqrt(self.grad_sq[idx]), self.clamp, np.inf)
-                coefs[idx] = coefs[idx] - (step * learn_rate)
+                coefs[idx] = coefs[idx] - (step * self.Learn.learn_rate)
         return coefs
     
     @staticmethod

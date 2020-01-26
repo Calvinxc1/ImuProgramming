@@ -19,14 +19,14 @@ class Calibrator:
     def coefs(self):
         return self.Model.coefs
         
-    def calibrate(self, iters, learn_rate):
+    def calibrate(self, iters):
         self.loss_rcd = []
         t = trange(iters) if self.verbose else range(iters)
-        for i in t: self._iterate(t, learn_rate)
+        for i in t: self._iterate(t)
         self.mag_scaled = self.Model.calc(self.mag_tensor)
         return pd.DataFrame(self.mag_scaled.detach().cpu().numpy(), columns=['x','y','z'])
                     
-    def _iterate(self, t, learn_rate):
+    def _iterate(self, t):
         self.Model.init()
         
         adj_data = self.Model.calc(self.mag_tensor)
@@ -36,4 +36,4 @@ class Calibrator:
         self.loss_rcd.append(loss.detach().cpu().numpy())
         if self.verbose: t.set_postfix({'loss': self.loss_rcd[-1]})
 
-        self.Model.update(loss, learn_rate)
+        self.Model.update(loss)

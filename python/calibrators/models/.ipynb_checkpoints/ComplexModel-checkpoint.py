@@ -28,6 +28,6 @@ class ComplexModel:
         adj_data = (mag_tensor + self._coefs['bias']) @ self._coefs['skew']
         return adj_data
     
-    def update(self, loss, learn_rate):
-        self._coefs = self.Gradient.descent(loss, self._coefs, learn_rate)
+    def update(self, loss):
+        self._coefs = self.Gradient.descent(loss, self._coefs)
         
