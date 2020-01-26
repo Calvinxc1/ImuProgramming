@@ -1,0 +1,1 @@
+from .EuclidianLoss import EuclidianLoss as Euclidian
