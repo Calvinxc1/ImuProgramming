@@ -14,10 +14,10 @@ class ComplexModel:
     @property
     def coefs(self):
         coefs = pd.DataFrame({
-            'bias': self._coefs['bias'],
-            'skew_x': self._coefs['skew'][:,0],
-            'skew_y': self._coefs['skew'][:,1],
-            'skew_z': self._coefs['skew'][:,2],
+            'bias': self._coefs['bias'].detach().cpu().numpy(),
+            'skew_x': self._coefs['skew'][:,0].detach().cpu().numpy(),
+            'skew_y': self._coefs['skew'][:,1].detach().cpu().numpy(),
+            'skew_z': self._coefs['skew'][:,2].detach().cpu().numpy(),
         }, index=['x','y','z'])
         return coefs
     

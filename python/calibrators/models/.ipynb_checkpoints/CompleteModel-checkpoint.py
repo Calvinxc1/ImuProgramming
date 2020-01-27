@@ -7,18 +7,19 @@ class ComplexModel:
     def __init__(self, Gradient=Adam, gradient_params={}):
         self.Gradient = Gradient(**gradient_params)
         self._coefs = {
-            'bias': pt.zeros(3),
-            'skew': pt.eye(3),
+            'offset': pt.zeros(3),
+            'orth': pt.ones(3),
+            'scale': pt.ones(3),
+            'hard': pt.zeros(3),
+            'soft': pt.eye(3),
         }
     
     @property
     def coefs(self):
-        coefs = pd.DataFrame({
-            'bias': self._coefs['bias'].detach().cpu().numpy(),
-            'skew_x': self._coefs['skew'][:,0].detach().cpu().numpy(),
-            'skew_y': self._coefs['skew'][:,1].detach().cpu().numpy(),
-            'skew_z': self._coefs['skew'][:,2].detach().cpu().numpy(),
-        }, index=['x','y','z'])
+        coefs = {
+            key:val.detach().cpu().numpy()
+            for key, val in self._coefs.items()
+        }
         return coefs
     
     def init(self):
