@@ -25,7 +25,7 @@ class ComplexModel:
         for val in self._coefs.values(): val.requires_grad = True
         
     def calc(self, mag_tensor):
-        adj_data = (mag_tensor + self._coefs['bias']) @ self._coefs['skew']
+        adj_data = (mag_tensor @ self._coefs['skew']) + self._coefs['bias']
         return adj_data
     
     def update(self, loss):
